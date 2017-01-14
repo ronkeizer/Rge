@@ -2,14 +2,15 @@
 #'
 #' @param cmd qstat command, default `qstat`
 #' @param flags add flags
+#' @param user show only for specific user
 #' @param filter filter list of column names and filter values
 #' @param exact filter using exact match or partial match? `TRUE` by default
 #' @export
 sge_qstat <- function(
   cmd = "qstat",
   flags = "",
-  filter = NULL,
   user = NULL,
+  filter = NULL,
   exact = TRUE) {
   flags <- paste(flags, " -xml")
   if(!is.null(user)) {

@@ -4,12 +4,15 @@
 \alias{sge_qstat}
 \title{Return output from qstat command as data.frame}
 \usage{
-sge_qstat(cmd = "qstat", flags = "", filter = NULL, exact = TRUE)
+sge_qstat(cmd = "qstat", flags = "", user = NULL, filter = NULL,
+  exact = TRUE)
 }
 \arguments{
 \item{cmd}{qstat command, default `qstat`}
 
 \item{flags}{add flags}
+
+\item{user}{show only for specific user}
 
 \item{filter}{filter list of column names and filter values}
 
