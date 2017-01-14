@@ -9,24 +9,26 @@ sge_qstat <- function(
   cmd = "qstat",
   flags = "",
   filter = NULL,
+  user = NULL,
   exact = TRUE) {
-  cols <- c("job-ID", "prior", "name", "user", "state", "submit/start at", "queue", "slots", "ja-task-ID")
-
-  ## RK: parsing of output and handling of colnames
-  ##     is very crappy, fix!
-  out <- system(paste(cmd, flags), intern=TRUE)
-  idx <- data.frame(stringr::str_locate(out[1], cols))
-  idx$end2 <- max(idx[,2])
-  idx[1:(length(idx[,1])-1),]$end2 <- idx[2:(length(idx[,1])),1]-1
-  data <- out[-c(1,2)]
-  all <- c()
-  for(i in seq(data)) {
-    tmp <- stringr::str_trim(
-      stringr::str_sub(data[i], idx$start, idx$end2)
-    )
-    all <- data.table::rbindlist(list(all, data.frame(rbind(tmp))))
+  flags <- paste(flags, " -xml")
+  if(!is.null(user)) {
+    flags <- paste(flags, "-u", user)
   }
-  colnames(all) <- cols
+  out <- paste(system(paste(cmd, flags), intern=TRUE), collapse = "")
+  data_all <- xml2::as_list(xml2::read_xml(out), )
+  all <- c()
+  for(i in seq(data_all$job_info)) {
+    tmp <- data_all$job_info[i]$job_list
+    if(length(tmp$queue_name) == 0) { tmp$queue_name <- "" }
+    all <- rbind(all, unlist(tmp))
+  }
+  all <- data.frame(all)
+  all$JAT_prio <- as.numeric(all$JAT_prio)
+  all$slots <- as.numeric(all$slots)
+  all$JB_submission_time <- as.POSIXct(all$JB_submission_time)
+  cols <- c("job-ID", "prior", "name", "user", "state", "t_submit_start", "queue", "slots", "ja-task-ID")
+  colnames(all) <- cols[1:length(all[1,])]
   if(!is.null(filter)) {
     for(i in 1:length(names(filter))) {
       if(exact) {
