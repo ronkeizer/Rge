@@ -1,12 +1,12 @@
-# R interface to GridEngine
+# R interface to Grid Engine
 
-Simple wrapper functions around the most common GridEngine commands. 
+Simple wrapper functions around the most common Grid Engine commands. 
 
 # Commands
 
-- `ge_qsub`: submit job to GE (returns `jobID`)
-- `ge_qstat`: get information on jobs (returns `data.frame`)
-- `ge_qhost`: get cluster information (returns `data.frame`)
+- `qsub`: submit job to GE (returns `jobID`)
+- `qstat`: get information on jobs (returns `data.frame`)
+- `qhost`: get cluster information (returns `data.frame`)
 
 # License
 
