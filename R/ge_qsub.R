@@ -7,7 +7,7 @@
 #' @param jobId job name. If blank assigned automatically by grid engine
 #'
 #' @export
-ge_qsub <- function(
+qsub <- function(
   cmd,
   script_file = "job.sh",
   submit_cmd = "qsub",

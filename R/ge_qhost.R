@@ -1,28 +1,20 @@
-#' Return output from qstat command as data.frame
+#' Return output from qhost command as data.frame
 #'
-#' @param cmd qstat command, default `qstat`
+#' @param cmd qstat command, default `qhost`
 #' @param flags add flags
 #' @param user specify user
 #' @param queue specify queue
 #' @param filter filter (afterwards) list of column names and filter values
 #' @param exact filter using exact match or partial match? `TRUE` by default
 #' @export
-qstat <- function(
-  cmd = "qstat",
+qhost <- function(
+  cmd = "qhost",
   flags = NULL,
-  user = NULL,
-  queue = NULL,
   filter = NULL,
   exact = TRUE,
   ext = FALSE,
   raw = FALSE) {
   flags <- paste(flags, " -xml")
-  if(!is.null(user)) {
-    flags <- paste(flags, "-u", user)
-  }
-  if(!is.null(queue)) {
-    flags <- paste(flags, "-q", queue)
-  }
   if(ext) {
     flags <- paste(flags, "-ext")
   }
@@ -30,24 +22,18 @@ qstat <- function(
   if(raw) {
     return(out)
   }
-  data <- xml2::as_list(xml2::read_xml(out), )
+  data_all <- xml2::as_list(xml2::read_xml(out))
   all <- c()
-  for(i in seq(data$job_info)) {
-    tmp <- data$job_info[i]$job_list
-    for(j in tmp) {
-      if(length(tmp) == 0) {
-        tmp[[j]] <- ""
-      }
+  for(i in seq(data_all)) {
+    tmp <- data_all[i]$host
+    n <- attr(tmp, "name")
+    l <- list()
+    for(k in seq(tmp)) {
+      l[[attr(tmp[[k]], "name")]] <- tmp[[k]][[1]][1]
     }
-    all <- rbind(all, unlist(tmp))
+    all <- rbind(all, cbind(name = n, rbind(l)))
   }
-  all <- data.frame(all)
-  all$JAT_prio <- as.numeric(all$JAT_prio)
-  all$slots <- as.numeric(all$slots)
-  if(!ext) {
-    cols <- c("job-ID", "prior", "name", "user", "state", "t_submit_start", "queue", "slots", "ja-task-ID")
-    colnames(all) <- cols[1:length(all[1,])]
-  }
+  all <- data.frame(all, row.names=NULL)
   if(!is.null(filter)) {
     for(i in 1:length(names(filter))) {
       if(exact) {
