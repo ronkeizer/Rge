@@ -1,12 +1,12 @@
-# R interface to SGE
+# R interface to GridEngine
 
-Simple wrapper functions around the most common SGE commands. 
+Simple wrapper functions around the most common GridEngine commands. 
 
 # Commands
 
-- `sge_qsub`: submit job to SGE (returns `jobID`)
-- `sge_qstat`: get information on jobs (returns `data.frame`)
-- `sge_qhost`: get cluster information (returns `data.frame`)
+- `ge_qsub`: submit job to GE (returns `jobID`)
+- `ge_qstat`: get information on jobs (returns `data.frame`)
+- `ge_qhost`: get cluster information (returns `data.frame`)
 
 # License
 
