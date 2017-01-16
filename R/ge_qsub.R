@@ -15,13 +15,6 @@ qsub <- function(
   name = NULL,
   prefix = NULL
   ) {
-    script <- c("#!/bin/bash", "#", "#$ -cwd", "#$ -j y", "#$ -S /bin/bash","#",
-                cmd)
-    fileConn <- file(script_file)
-    writeLines(script, fileConn)
-    close(fileConn)
-    out <- system(paste(submit_cmd = submit_cmd, script_file), intern=TRUE)
-    jobId <- NULL
     if(is.null(name)) {
       random_string <- function(len = 12) { return(paste(sample(c(rep(0:9,each=5),LETTERS,letters),len,replace=TRUE),collapse='')) }
       name <- random_string(8)
@@ -31,6 +24,20 @@ qsub <- function(
     if(!is.null(prefix)) {
       name <- paste0(prefix, "_", job)
     }
+    script <- c(
+      "#!/bin/bash",
+      "#",
+      "#$ -cwd",
+      paste0("#$ -N ", name),
+      "#$ -j y",
+      "#$ -S /bin/bash",
+      "#",
+      cmd)
+    fileConn <- file(script_file)
+    writeLines(script, fileConn)
+    close(fileConn)
+    out <- system(paste(submit_cmd = submit_cmd, script_file), intern=TRUE)
+    jobId <- NULL
     if(stringr::str_detect(out[1], "Your job")) {
       jobId <- stringr::str_split(
         stringr::str_split(out[1], "Your job ")[[1]][2],
