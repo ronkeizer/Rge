@@ -4,7 +4,7 @@
 \alias{qsub}
 \title{Submit job to GridEngine}
 \usage{
-qsub(cmd, script_file = "job.sh", submit_cmd = "qsub", queue = NULL,
+qsub(cmd, script_file = "job.sh", submit_cmd = "qsub", queue = "main",
   name = NULL, prefix = NULL)
 }
 \arguments{

@@ -4,6 +4,7 @@
 #' @param flags add flags
 #' @param user specify user
 #' @param queue specify queue
+#' @param all show all jobs, also finished / zombie? Default `TRUE`
 #' @param filter filter (afterwards) list of column names and filter values
 #' @param exact filter using exact match or partial match? `TRUE` by default
 #' @export
@@ -12,26 +13,41 @@ qstat <- function(
   flags = NULL,
   user = NULL,
   queue = NULL,
+  all = FALSE,
   filter = NULL,
   exact = TRUE,
   ext = FALSE,
-  raw = FALSE) {
-  flags <- paste(flags, " -xml")
+  raw = FALSE,
+  verbose = FALSE) {
+  flags <- c(flags, "-xml")
   if(!is.null(user)) {
-    flags <- paste(flags, "-u", user)
+    flags <- c(flags, paste("-u", user))
   }
   if(!is.null(queue)) {
-    flags <- paste(flags, "-q", queue)
+    flags <- c(flags, paste("-q", queue))
+  }
+  if(all) {
+    flags <- c(flags, paste("-s prsz"))
   }
   if(ext) {
-    flags <- paste(flags, "-ext")
+    flags <- c(flags, "-ext")
   }
-  out <- paste(system(paste(cmd, flags), intern=TRUE), collapse = "")
+  cmd_full <- paste(cmd, flags)
+  if(verbose) {
+    cat(paste0(cmd_full, "\n"))
+  }
+  out <- paste(system2(cmd, args = flags, stdout=TRUE), collapse = "")
   if(raw) {
     return(out)
   }
+  if(verbose) {
+    cat(out)
+  }
   data <- xml2::as_list(xml2::read_xml(out), )
   all <- c()
+  if(!is.null(data$queue_info)) { # running jobs are stored in queue_info
+    data$job_info <- c(data$queue_info, data$job_info)
+  }
   for(i in seq(data$job_info)) {
     tmp <- data$job_info[i]$job_list
     for(j in tmp) {

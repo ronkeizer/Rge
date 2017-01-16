@@ -5,7 +5,7 @@
 \title{Return output from qstat command as data.frame}
 \usage{
 qstat(cmd = "qstat", flags = NULL, user = NULL, queue = NULL,
-  filter = NULL, exact = TRUE, ext = FALSE, raw = FALSE)
+  all = TRUE, filter = NULL, exact = TRUE, ext = FALSE, raw = FALSE)
 }
 \arguments{
 \item{cmd}{qstat command, default `qstat`}
@@ -15,6 +15,8 @@ qstat(cmd = "qstat", flags = NULL, user = NULL, queue = NULL,
 \item{user}{specify user}
 
 \item{queue}{specify queue}
+
+\item{all}{show all jobs, also finished / zombie? Default `TRUE`}
 
 \item{filter}{filter (afterwards) list of column names and filter values}
 

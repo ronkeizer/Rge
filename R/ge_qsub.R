@@ -11,9 +11,10 @@ qsub <- function(
   cmd,
   script_file = "job.sh",
   submit_cmd = "qsub",
-  queue = NULL,
+  queue = "main",
   name = NULL,
-  prefix = NULL
+  prefix = NULL,
+  cwd = FALSE
   ) {
     if(is.null(name)) {
       random_string <- function(len = 12) { return(paste(sample(c(rep(0:9,each=5),LETTERS,letters),len,replace=TRUE),collapse='')) }
@@ -29,6 +30,7 @@ qsub <- function(
       "#",
       "#$ -cwd",
       paste0("#$ -N ", name),
+      paste0("#$ -q ", queue),
       "#$ -j y",
       "#$ -S /bin/bash",
       "#",
