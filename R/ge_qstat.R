@@ -14,6 +14,7 @@ qstat <- function(
   user = NULL,
   queue = NULL,
   all = FALSE,
+  pending = TRUE,
   filter = NULL,
   exact = TRUE,
   ext = FALSE,
@@ -25,6 +26,9 @@ qstat <- function(
   }
   if(!is.null(queue)) {
     flags <- c(flags, paste("-q", queue))
+  }
+  if(pending && !all) {
+    flags <- c(flags, paste("-s pr"))
   }
   if(all) {
     flags <- c(flags, paste("-s prsz"))
