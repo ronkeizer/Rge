@@ -5,7 +5,7 @@
 \title{Submit job to GridEngine}
 \usage{
 qsub(cmd, script_file = "job.sh", submit_cmd = "qsub", queue = "main",
-  name = NULL, prefix = NULL)
+  name = NULL, prefix = NULL, cwd = FALSE)
 }
 \arguments{
 \item{cmd}{command to execute}

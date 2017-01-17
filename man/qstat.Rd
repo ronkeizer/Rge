@@ -5,7 +5,8 @@
 \title{Return output from qstat command as data.frame}
 \usage{
 qstat(cmd = "qstat", flags = NULL, user = NULL, queue = NULL,
-  all = TRUE, filter = NULL, exact = TRUE, ext = FALSE, raw = FALSE)
+  all = FALSE, filter = NULL, exact = TRUE, ext = FALSE, raw = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{cmd}{qstat command, default `qstat`}
